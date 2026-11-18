@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeGuard 360 | Your Safety. Your Power. Your Future.</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body>
+
+    <!-- ============================================================
+         HEADER / NAVIGATION
+         ============================================================ -->
+    <header class="navbar">
+        <a href="/" class="brand-container">
+            <div class="brand-logo-icon">🛡️</div>
+            <div class="brand-title">
+                SafeGuard 360
+                <span class="brand-badge">24/7 Security</span>
+            </div>
+        </a>
+
+        <nav class="nav-links">
+            <a href="/" style="color: var(--white); border-bottom: 2px solid var(--teal-400);">Home</a>
+            <a href="/womens-safety">Women's Safety</a>
+            <a href="/child-safety">Child Safety</a>
+            <a href="/personal-safety">Personal Safety</a>
+            <a href="#dashboards">Dashboards</a>
+            <a href="#empowerment-hub">Empowerment Hub</a>
+            <a href="#helplines">Helplines</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a href="tel:112" class="nav-hotline-btn">
+                <span>🚨</span> Call 112
+            </a>
+        </div>
+    </header>
+
+    <!-- ============================================================
+         ACTIVE SOS EMERGENCY MODAL / OVERLAY
+         ============================================================ -->
+    <div id="sos-overlay" class="sos-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="sos-modal-title">
+        <div class="sos-modal">
+            <div class="sos-modal-header">
+                <div class="sos-modal-title-group">
+                    <span class="sos-live-beacon"></span>
+                    <div>
+                        <h2 id="sos-modal-title">🚨 SOS EMERGENCY ACTIVATED</h2>
+                        <p class="sos-modal-subtitle">One-touch direct dispatch to your verified trusted contacts</p>
+                    </div>
+                </div>
+                <button type="button" class="sos-modal-close" onclick="closeSOS()" aria-label="Close SOS Modal">✕ Close</button>
+            </div>
+
+            <!-- Action Feedback Notice Toast -->
+            <div id="sos-action-notice"></div>
+
+            <!-- GPS Location Status Banner -->
+            <div id="sos-location-banner" class="sos-location-banner">
+                <div class="sos-banner-icon">🛰️</div>
+                <div class="sos-banner-content">
+                    <h4 id="sos-gps-status">Acquiring high-accuracy GPS coordinates...</h4>
+                    <p id="sos-gps-coords">Please grant browser location permission if prompted.</p>
+                    <div id="sos-maps-link-container"></div>
+                </div>
+            </div>
+
+            <!-- Pre-composed Emergency Message Preview -->
+            <div class="sos-message-preview-card">
+                <div class="sos-preview-header">
+                    <span>📝 Pre-composed Emergency Broadcast:</span>
+                    <span class="brand-badge">Auto-Generated</span>
+                </div>
+                <p id="sos-active-message-text" class="sos-preview-text">
+                    EMERGENCY! I need help. I may be in an unsafe situation. Acquiring current location... Please contact me immediately.
+                </p>
+            </div>
+
+            <!-- Emergency Contacts Dispatch Section -->
+            <div class="sos-contacts-section">
+                <div class="sos-contacts-header">
+                    <h3><span>👥</span> Emergency Contacts Dispatch</h3>
+                    <span id="sos-contacts-count" class="brand-badge">0 Contacts</span>
+                </div>
+                <div id="sos-contacts-dispatch-list" class="sos-dispatch-list">
+                    <div class="empty-state">Loading trusted contacts from MongoDB...</div>
+                </div>
+            </div>
+
+            <!-- Helplines Fallback -->
+            <div class="sos-helplines-bar">
+                <span>Immediate Danger?</span>
+                <div class="sos-helpline-buttons">
+                    <a href="tel:112" class="btn btn-danger btn-sm">🚔 Call 112 (Police)</a>
+                    <a href="tel:181" class="btn btn-secondary btn-sm">🛡️ Call 181 (Women)</a>
+                    <a href="tel:1098" class="btn btn-secondary btn-sm">👧 Call 1098 (Child)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main>
+
+        <!-- ============================================================
+             HERO SECTION
+             ============================================================ -->
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <div class="hero-pill">
+                    <span class="pulse-dot"></span>
+                    <span>Next-Generation Safety Architecture</span>
+                </div>
+
+                <h1 style="font-size: clamp(36px, 5.5vw, 62px);">
+                    Your Safety. Your Power.<br>
+                    <span style="background: linear-gradient(135deg, #38bdf8 0%, #2dd4bf 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Your Future.</span>
+                </h1>
+
+                <p class="hero-lead">
+                    SAFEGUARD 360 delivers an intelligent, mission-critical ecosystem designed to protect women, children,
+                    and citizens. Three specialized dashboards connected to real-time GPS radar, verified guardian networks,
+                    and 24/7 national response hotlines.
+                </p>
+
+                <!-- Quick Emergency SOS Trigger -->
+                <div class="sos-trigger-wrapper">
+                    <button class="sos-button" onclick="sendSOS()" aria-label="Trigger SOS Emergency">
+                        <span>🚨</span> SOS EMERGENCY
+                    </button>
+                    <span class="sos-subtext">⚡ Instant location capture & emergency circle broadcast</span>
+                </div>
+
+                <p id="sos-message"></p>
+
+                <!-- Quick Access Hotlines Pill Bar -->
+                <div style="display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 25px;">
+                    <a href="tel:112" class="nav-hotline-btn" style="background: rgba(239, 68, 68, 0.25);">
+                        <span>🚔</span> Police & Emergency: 112
+                    </a>
+                    <a href="tel:181" class="nav-hotline-btn" style="background: rgba(244, 63, 94, 0.2); color: #fecdd3; border-color: rgba(244, 63, 94, 0.4);">
+                        <span>🛡️</span> Women Helpline: 181
+                    </a>
+                    <a href="tel:1098" class="nav-hotline-btn" style="background: rgba(14, 165, 233, 0.2); color: #7dd3fc; border-color: rgba(14, 165, 233, 0.4);">
+                        <span>👧</span> Childline: 1098
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             TASK 1 CORE: THREE MAIN DASHBOARD CHOICES
+             ============================================================ -->
+        <section class="dashboards-section" id="dashboards">
+            <div class="section-header">
+                <span class="section-eyebrow">Dedicated Protection Consoles</span>
+                <h2>Three Specialized Safety Dashboards</h2>
+                <p>Choose the dedicated environment engineered with customized emergency protocols, guardian networks, and rapid dispatch tools.</p>
+            </div>
+
+            <div class="dashboard-choice-grid">
+
+                <!-- 1. CHILD SAFETY DASHBOARD -->
+                <div class="dashboard-choice-card child">
+                    <div>
+                        <div class="choice-header">
+                            <div class="choice-icon child">👧</div>
+                            <span class="choice-badge blue">Child Protection Network</span>
+                        </div>
+
+                        <h3 class="choice-title">1. CHILD SAFETY</h3>
+                        <p class="choice-desc">
+                            Specialized protection for parents, educators, and children. Real-time school transit GPS radar, rapid missing-child broadcast, and verified guardian dispatch.
+                        </p>
+
+                        <ul class="choice-features-list">
+                            <li><span class="bullet">✓</span> School & commute GPS route radar</li>
+                            <li><span class="bullet">✓</span> Missing child rapid alert generator</li>
+                            <li><span class="bullet">✓</span> Direct 24/7 Childline 1098 integration</li>
+                            <li><span class="bullet">✓</span> Parent & guardian emergency broadcast</li>
+                            <li><span class="bullet">✓</span> POCSO Act guidelines & cyber safety</li>
+                        </ul>
+                    </div>
+
+                    <a href="/child-safety" class="btn btn-primary btn-block" style="background: linear-gradient(135deg, #0284c7, #0ea5e9); color: white;">
+                        <span>👧</span> Open Child Safety Dashboard →
+                    </a>
+                </div>
+
+                <!-- 2. WOMEN'S SAFETY DASHBOARD (Featured Flagship) -->
+                <div class="dashboard-choice-card featured">
+                    <div>
+                        <div class="choice-header">
+                            <div class="choice-icon women">👩</div>
+                            <span class="choice-badge red">Featured Active Dashboard</span>
+                        </div>
+
+                        <h3 class="choice-title">2. WOMEN'S SAFETY</h3>
+                        <p class="choice-desc">
+                            Our fully developed emergency command center featuring real-time GPS location capture, Google Maps broadcast, trusted contacts circle with one-tap Call/WhatsApp/SMS, and encrypted incident logging.
+                        </p>
+
+                        <ul class="choice-features-list">
+                            <li><span class="bullet">✓</span> Instant SOS Emergency GPS broadcasting</li>
+                            <li><span class="bullet">✓</span> Trusted contacts circle (MongoDB sync)</li>
+                            <li><span class="bullet">✓</span> One-touch WhatsApp & SMS emergency dispatch</li>
+                            <li><span class="bullet">✓</span> Encrypted incident reporting & audit trail</li>
+                            <li><span class="bullet">✓</span> Women Helpline 181 & Police 112 direct dial</li>
+                        </ul>
+                    </div>
+
+                    <a href="/womens-safety" class="btn btn-primary btn-block" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);">
+                        <span>👩</span> Open Women's Safety Dashboard →
+                    </a>
+                </div>
+
+                <!-- 3. PERSONAL SAFETY DASHBOARD -->
+                <div class="dashboard-choice-card personal">
+                    <div>
+                        <div class="choice-header">
+                            <div class="choice-icon personal">🧍</div>
+                            <span class="choice-badge green">Solo Commute & Defense</span>
+                        </div>
+
+                        <h3 class="choice-title">3. PERSONAL SAFETY</h3>
+                        <p class="choice-desc">
+                            Autonomous defense console for commuters, solo travelers, elderly, and night workers featuring instant GPS radar, audible distress siren, and 112 emergency routing.
+                        </p>
+
+                        <ul class="choice-features-list">
+                            <li><span class="bullet">✓</span> Solo commute & night transit radar</li>
+                            <li><span class="bullet">✓</span> Interactive audible distress siren</li>
+                            <li><span class="bullet">✓</span> Emergency medical & accident response</li>
+                            <li><span class="bullet">✓</span> One-tap emergency circle dispatch</li>
+                            <li><span class="bullet">✓</span> Police & National Emergency 112 link</li>
+                        </ul>
+                    </div>
+
+                    <a href="/personal-safety" class="btn btn-primary btn-block" style="background: linear-gradient(135deg, #059669, #10b981); color: white;">
+                        <span>🧍</span> Open Personal Safety Dashboard →
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================
+             COMMON SECTION: SAFETY & EMPOWERMENT HUB
+             ============================================================ -->
+        <section class="empowerment-section" id="empowerment-hub">
+            <div class="section-header">
+                <span class="section-eyebrow" style="color: var(--teal-300);">Knowledge, Rights & Crisis Preparedness</span>
+                <h2>Safety & Empowerment Hub</h2>
+                <p>Knowledge is your greatest defense. Access verified legal protections, tactical defense awareness, crisis protocols, and verified psychological support.</p>
+            </div>
+
+            <div class="empowerment-grid">
+                <!-- Module 1: Legal Rights & Protection Acts -->
+                <div class="empowerment-card">
+                    <div class="empowerment-icon">⚖️</div>
+                    <h3>Legal Rights & Protection Acts</h3>
+                    <p>Clear, accessible breakdowns of critical Indian legal provisions and citizen rights during crisis situations.</p>
+                    <ul>
+                        <li>Zero-FIR: File complaint at any police station regardless of jurisdiction</li>
+                        <li>POCSO Act: Strict protection for minors against offenses</li>
+                        <li>POSH Act: Workplace harassment prevention and IC guidelines</li>
+                        <li>Section 46(4) CrPC: Women arrest restrictions during sunset to sunrise</li>
+                    </ul>
+                </div>
+
+                <!-- Module 2: Situational Defense & Commute Safety -->
+                <div class="empowerment-card">
+                    <div class="empowerment-icon">🥋</div>
+                    <h3>Situational Defense & Commute Safety</h3>
+                    <p>Practical safety habits, de-escalation strategies, and tactical transit protocols for daily navigation.</p>
+                    <ul>
+                        <li>Safe Transit Rules: Verify cab license & child locks before entry</li>
+                        <li>Vulnerable Navigation: Stay near lighted paths & active storefronts</li>
+                        <li>De-escalation: Firm verbal boundaries and spatial defense</li>
+                        <li>Digital Discretion: Keep emergency contacts on speed-dial</li>
+                    </ul>
+                </div>
+
+                <!-- Module 3: Emergency First-Aid & Trauma Response -->
+                <div class="empowerment-card">
+                    <div class="empowerment-icon">🏥</div>
+                    <h3>First-Aid & Crisis Handling</h3>
+                    <p>Essential immediate medical protocols to stabilize emergencies before professional responders arrive.</p>
+                    <ul>
+                        <li>Severe Bleeding: Direct firm pressure and elevation</li>
+                        <li>Unconscious Person: Recovery position & airway clearance</li>
+                        <li>Accident Protocol: Call 112, do not move suspected spinal injury</li>
+                        <li>Panic Attack Management: 4-7-8 breathing & tactile grounding</li>
+                    </ul>
+                </div>
+
+                <!-- Module 4: Mental Health & Crisis Counseling -->
+                <div class="empowerment-card">
+                    <div class="empowerment-icon">🧠</div>
+                    <h3>Counseling & Support Hotlines</h3>
+                    <p>Confidential, toll-free emotional and psychological support services available across India 24/7.</p>
+                    <ul>
+                        <li>KIRAN National Mental Health Helpline: 1800-599-0019</li>
+                        <li>Vandrevala Foundation (24/7 Crisis Helpline): 9999 666 555</li>
+                        <li>National Commission for Women (NCW 24/7): 7827-170-170</li>
+                        <li>iCall Psychosocial Helpline: 9152987821</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             NATIONAL EMERGENCY HELPLINES SECTION
+             ============================================================ -->
+        <section class="helpline-section" id="helplines">
+            <div class="dashboard-container">
+                <div class="section-header">
+                    <span class="section-eyebrow">24/7 National Emergency Dispatch</span>
+                    <h2>Emergency Helplines</h2>
+                    <p>Instant direct-dial access to verified emergency response services. Free and available 24/7 across India.</p>
+                </div>
+
+                <div class="helpline-grid">
+                    <div class="helpline-card featured">
+                        <div class="helpline-info">
+                            <h4>National Police & Emergency</h4>
+                            <div class="helpline-number">
+                                <span>🚔</span> 112
+                            </div>
+                            <div class="helpline-desc">All-in-One Police, Fire, and Medical Dispatch</div>
+                        </div>
+                        <a href="tel:112" class="helpline-call-btn">
+                            <span>📞</span> Call 112
+                        </a>
+                    </div>
+
+                    <div class="helpline-card">
+                        <div class="helpline-info">
+                            <h4>Women Helpline</h4>
+                            <div class="helpline-number">
+                                <span>🛡️</span> 181
+                            </div>
+                            <div class="helpline-desc">National 24/7 Women in Distress Support</div>
+                        </div>
+                        <a href="tel:181" class="helpline-call-btn">
+                            <span>📞</span> Call 181
+                        </a>
+                    </div>
+
+                    <div class="helpline-card">
+                        <div class="helpline-info">
+                            <h4>Child Helpline</h4>
+                            <div class="helpline-number">
+                                <span>👧</span> 1098
+                            </div>
+                            <div class="helpline-desc">National Child Protection & Care Service</div>
+                        </div>
+                        <a href="tel:1098" class="helpline-call-btn">
+                            <span>📞</span> Call 1098
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3><span>🛡️</span> SafeGuard 360</h3>
+                <p>Your Safety. Your Power. Your Future. India's unified personal emergency platform connecting citizens, guardians, and responders.</p>
+            </div>
+
+            <div class="footer-nav">
+                <a href="/">Home</a>
+                <a href="/womens-safety">Women's Safety</a>
+                <a href="/child-safety">Child Safety</a>
+                <a href="/personal-safety">Personal Safety</a>
+                <a href="#empowerment-hub">Empowerment Hub</a>
+                <a href="#helplines">Helplines</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 SafeGuard 360 | "Your Safety. Your Power. Your Future."</p>
+            <p>Police: 112 | Women: 181 | Child: 1098</p>
+        </div>
+    </footer>
+
+    <script src="/script.js"></script>
+</body>
+
+</html>

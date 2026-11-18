@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeGuard 360 | Personal Safety & Defense Dashboard</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body>
+
+    <!-- ============================================================
+         HEADER / NAVIGATION
+         ============================================================ -->
+    <header class="navbar">
+        <a href="/" class="brand-container">
+            <div class="brand-logo-icon" style="background: linear-gradient(135deg, #10b981, #059669);">🧍</div>
+            <div class="brand-title">
+                SafeGuard 360
+                <span class="brand-badge" style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.4);">🧍 Personal Safety</span>
+            </div>
+        </a>
+
+        <nav class="nav-links">
+            <a href="/">🏠 Home</a>
+            <a href="/womens-safety">Women's Safety</a>
+            <a href="/child-safety">Child Safety</a>
+            <a href="/personal-safety" style="color: var(--white); border-bottom: 2px solid var(--teal-400);">Personal Safety</a>
+            <a href="/#empowerment-hub">Empowerment Hub</a>
+            <a href="#trusted-contacts">Contacts</a>
+            <a href="#report-incident">Report Incident</a>
+            <a href="#incident-history">History</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a href="/" class="btn btn-secondary btn-sm" style="margin-right: 6px;">
+                <span>←</span> Back to Home
+            </a>
+            <a href="tel:112" class="nav-hotline-btn">
+                <span>🚨</span> Call 112
+            </a>
+        </div>
+    </header>
+
+    <!-- ============================================================
+         ACTIVE SOS EMERGENCY MODAL / OVERLAY
+         ============================================================ -->
+    <div id="sos-overlay" class="sos-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="sos-modal-title">
+        <div class="sos-modal">
+            <div class="sos-modal-header">
+                <div class="sos-modal-title-group">
+                    <span class="sos-live-beacon"></span>
+                    <div>
+                        <h2 id="sos-modal-title">🚨 PERSONAL EMERGENCY SOS ACTIVATED</h2>
+                        <p class="sos-modal-subtitle">One-touch direct dispatch to your emergency circle & national responders</p>
+                    </div>
+                </div>
+                <button type="button" class="sos-modal-close" onclick="closeSOS()" aria-label="Close SOS Modal">✕ Close</button>
+            </div>
+
+            <!-- Action Feedback Notice Toast -->
+            <div id="sos-action-notice"></div>
+
+            <!-- GPS Location Status Banner -->
+            <div id="sos-location-banner" class="sos-location-banner">
+                <div class="sos-banner-icon">🛰️</div>
+                <div class="sos-banner-content">
+                    <h4 id="sos-gps-status">Acquiring high-accuracy GPS coordinates...</h4>
+                    <p id="sos-gps-coords">Please grant browser location permission if prompted.</p>
+                    <div id="sos-maps-link-container"></div>
+                </div>
+            </div>
+
+            <!-- Pre-composed Emergency Message Preview -->
+            <div class="sos-message-preview-card">
+                <div class="sos-preview-header">
+                    <span>📝 Personal Emergency Broadcast:</span>
+                    <span class="brand-badge">Auto-Generated</span>
+                </div>
+                <p id="sos-active-message-text" class="sos-preview-text">
+                    EMERGENCY! I need immediate assistance. Acquiring location... Please contact me.
+                </p>
+            </div>
+
+            <!-- Emergency Contacts Dispatch Section -->
+            <div class="sos-contacts-section">
+                <div class="sos-contacts-header">
+                    <h3><span>👥</span> Emergency Contacts Dispatch</h3>
+                    <span id="sos-contacts-count" class="brand-badge">0 Contacts</span>
+                </div>
+                <div id="sos-contacts-dispatch-list" class="sos-dispatch-list">
+                    <div class="empty-state">Loading trusted contacts from MongoDB...</div>
+                </div>
+            </div>
+
+            <!-- Helplines Fallback -->
+            <div class="sos-helplines-bar">
+                <span>Immediate Danger?</span>
+                <div class="sos-helpline-buttons">
+                    <a href="tel:112" class="btn btn-danger btn-sm">🚔 Call 112 (Police)</a>
+                    <a href="tel:181" class="btn btn-secondary btn-sm">🛡️ Call 181 (Women)</a>
+                    <a href="tel:1098" class="btn btn-secondary btn-sm">👧 Call 1098 (Child)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main>
+
+        <!-- ============================================================
+             DASHBOARD BREADCRUMB BANNER
+             ============================================================ -->
+        <div style="background: rgba(14, 23, 54, 0.95); border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding: 12px 6%;">
+            <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--slate-300);">
+                    <a href="/" style="color: var(--teal-300); text-decoration: none;">Home</a>
+                    <span>/</span>
+                    <span style="color: var(--white); font-weight: 700;">Personal Safety Dashboard</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 14px; font-size: 12px;">
+                    <span style="color: var(--teal-300);">● Commute Defense & Siren Tools Ready</span>
+                    <a href="tel:112" style="color: #fca5a5; text-decoration: none; font-weight: 700;">📞 Police & Medical: 112</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             HERO SECTION & PERSONAL SOS
+             ============================================================ -->
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <div class="hero-pill" style="border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7;">
+                    <span class="pulse-dot" style="background: #10b981;"></span>
+                    <span>Personal Security Shield Active</span>
+                </div>
+
+                <h1>Your Personal Shield.<br>Anytime. Anywhere.</h1>
+                <p class="hero-lead">
+                    An advanced emergency defense dashboard for commuters, solo travelers, elderly, and night workers
+                    featuring instant GPS broadcasting, tactile distress triggers, and rapid circle dispatch.
+                </p>
+
+                <!-- SOS Emergency Trigger -->
+                <div class="sos-trigger-wrapper">
+                    <button class="sos-button" onclick="sendSOS()" aria-label="Trigger Personal SOS Emergency">
+                        <span>🚨</span> PERSONAL SOS EMERGENCY
+                    </button>
+                    <span class="sos-subtext">⚡ Instant location capture & emergency circle broadcast</span>
+                </div>
+
+                <p id="sos-message"></p>
+
+                <!-- ============================================================
+                     EMERGENCY ACTION PANEL (COMMAND HUB)
+                     ============================================================ -->
+                <div class="emergency-panel-container" id="emergency-hub">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>📡</span> Personal Transit & Security Command Hub
+                        </div>
+                        <div class="panel-status-pill">
+                            <span>●</span> System Operational
+                        </div>
+                    </div>
+
+                    <div class="action-grid">
+                        <!-- Step 1: GPS Location Radar -->
+                        <div class="action-card">
+                            <div class="action-card-header">
+                                <div class="action-card-icon" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">📍</div>
+                                <div class="action-card-info">
+                                    <h4>Solo Transit GPS Radar</h4>
+                                    <p>Capture high-precision coordinates during late-night commutes, cabs, or solo walking.</p>
+                                </div>
+                            </div>
+                            <div id="location-details">
+                                <p id="user-location">Coordinates not detected yet. Click below.</p>
+                                <button type="button" class="btn btn-primary btn-block" onclick="getLocation()">
+                                    <span>📡</span> Share My Location
+                                </button>
+                            </div>
+                            <div id="emergency-alert"></div>
+                        </div>
+
+                        <!-- Step 2: Emergency Alert Dispatch -->
+                        <div class="action-card">
+                            <div class="action-card-header">
+                                <div class="action-card-icon" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">⚡</div>
+                                <div class="action-card-info">
+                                    <h4>Emergency Alert Dispatch</h4>
+                                    <p>Compose verified alerts with location map links and broadcast to your circle.</p>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary btn-block" onclick="prepareEmergencyAlert()">
+                                <span>🚨</span> Prepare Emergency Alert
+                            </button>
+
+                            <div class="button-cluster">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="copyEmergencyAlert()">
+                                    <span>📋</span> Copy Message
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="shareEmergencyAlert()">
+                                    <span>📤</span> Web Share
+                                </button>
+                                <button type="button" class="btn btn-whatsapp btn-sm" onclick="shareWhatsApp()">
+                                    <span>💬</span> WhatsApp Alert
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alert Preview Output Box -->
+                    <div id="alert-preview"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             TACTILE PERSONAL SAFETY TOOLS (SIREN & TRANSIT)
+             ============================================================ -->
+        <section class="safety-section" id="safety">
+            <div class="section-header">
+                <span class="section-eyebrow">Active Situational Defense</span>
+                <h2>Personal Defense Tools</h2>
+                <p>Tactile tools designed for solo commuters, vulnerable travelers, and unexpected crises.</p>
+            </div>
+
+            <div class="cards">
+                <div class="card">
+                    <div class="card-icon-bubble" style="background: #ecfdf5; color: #059669;">🚶</div>
+                    <h3>Solo Commute Radar</h3>
+                    <p>Continuous GPS coordinate logging and quick location dispatch when traveling alone at night or via unfamiliar transit.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon-bubble" style="background: #ecfdf5; color: #059669;">🔊</div>
+                    <h3>Audible Distress Siren</h3>
+                    <p>Trigger an attention-attracting high-decibel audible alarm to deter potential stalkers or alert nearby crowds.</p>
+                    <button type="button" id="siren-toggle-btn" class="btn btn-danger btn-sm" style="margin-top: 14px;" onclick="toggleDistressSiren()">
+                        <span>📢</span> Sound Emergency Siren
+                    </button>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon-bubble" style="background: #ecfdf5; color: #059669;">🏥</div>
+                    <h3>Medical & Trauma Response</h3>
+                    <p>Immediate 112 routing for sudden medical distress, cardiac emergencies, road accidents, or personal injury.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon-bubble" style="background: #ecfdf5; color: #059669;">📱</div>
+                    <h3>One-Tap WhatsApp & SMS</h3>
+                    <p>Instant dispatch to your trusted emergency circle with pre-composed messages and Google Maps route links.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             EMERGENCY HELPLINES (112 Police & Medical Featured)
+             ============================================================ -->
+        <section class="helpline-section" id="contacts">
+            <div class="dashboard-container">
+                <div class="section-header">
+                    <span class="section-eyebrow">24/7 National Emergency Services</span>
+                    <h2>Emergency Helplines</h2>
+                    <p>One-touch connection to national emergency, medical, and disaster response.</p>
+                </div>
+
+                <div class="helpline-grid">
+                    <div class="helpline-card featured">
+                        <div class="helpline-info">
+                            <h4>National Police & Medical</h4>
+                            <div class="helpline-number">
+                                <span>🚔</span> 112
+                            </div>
+                            <div class="helpline-desc">National All-in-One Emergency Response</div>
+                        </div>
+                        <a href="tel:112" class="helpline-call-btn">
+                            <span>📞</span> Call 112
+                        </a>
+                    </div>
+
+                    <div class="helpline-card">
+                        <div class="helpline-info">
+                            <h4>Women Helpline</h4>
+                            <div class="helpline-number">
+                                <span>🛡️</span> 181
+                            </div>
+                            <div class="helpline-desc">National Women in Distress Hotline</div>
+                        </div>
+                        <a href="tel:181" class="helpline-call-btn">
+                            <span>📞</span> Call 181
+                        </a>
+                    </div>
+
+                    <div class="helpline-card">
+                        <div class="helpline-info">
+                            <h4>Child Helpline</h4>
+                            <div class="helpline-number">
+                                <span>👧</span> 1098
+                            </div>
+                            <div class="helpline-desc">National Child Protection Service</div>
+                        </div>
+                        <a href="tel:1098" class="helpline-call-btn">
+                            <span>📞</span> Call 1098
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             DASHBOARD: TRUSTED CONTACTS MANAGEMENT
+             ============================================================ -->
+        <section class="dashboard-section" id="trusted-contacts">
+            <div class="dashboard-container">
+                <div class="section-header">
+                    <span class="section-eyebrow">Personal Emergency Network</span>
+                    <h2>My Trusted Contacts</h2>
+                    <p>Add friends, family, and colleagues who can support you during emergencies with instant Call, WhatsApp, and SMS alerts.</p>
+                </div>
+
+                <div class="dashboard-two-col">
+                    <!-- Contact Form Card -->
+                    <div class="form-card">
+                        <h3><span>👤</span> Add Trusted Contact</h3>
+                        <p class="form-subtitle">Saved contacts are instantly accessible in the emergency broadcast console.</p>
+
+                        <form id="contact-form">
+                            <div class="form-group">
+                                <label for="contact-name">Contact Full Name</label>
+                                <input type="text" id="contact-name" class="form-control" placeholder="e.g. Alex Henderson" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contact-phone">Phone Number</label>
+                                <input type="tel" id="contact-phone" class="form-control" placeholder="e.g. +91 9876543210" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contact-relation">Relationship</label>
+                                <select id="contact-relation" class="form-control" required>
+                                    <option value="">Select relationship</option>
+                                    <option value="Friend">Friend / Colleague</option>
+                                    <option value="Mother">Mother</option>
+                                    <option value="Father">Father</option>
+                                    <option value="Spouse">Spouse / Partner</option>
+                                    <option value="Brother">Brother</option>
+                                    <option value="Sister">Sister</option>
+                                    <option value="Guardian">Guardian</option>
+                                    <option value="Other">Neighbor / Roommate</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <span>➕</span> Add Trusted Contact
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Contact List Display -->
+                    <div class="form-card">
+                        <div class="contacts-display-header">
+                            <h4><span>👥</span> Active Emergency Circle</h4>
+                            <span class="brand-badge">Encrypted MongoDB Sync</span>
+                        </div>
+                        <div id="contact-list">
+                            <div class="empty-state">Loading trusted contacts...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             DASHBOARD: EMERGENCY INCIDENT REPORTING
+             ============================================================ -->
+        <section class="dashboard-section alt-bg" id="report-incident">
+            <div class="dashboard-container">
+                <div class="section-header">
+                    <span class="section-eyebrow">Rapid Incident Logging</span>
+                    <h2>Report a Safety Incident</h2>
+                    <p>Securely log safety concerns, road aggression, stalking, or medical incidents into the database.</p>
+                </div>
+
+                <div class="dashboard-two-col">
+                    <!-- Incident Form -->
+                    <div class="form-card">
+                        <h3><span>🚨</span> Log Safety Report</h3>
+                        <p class="form-subtitle">All entries are recorded with verifiable server timestamps.</p>
+
+                        <form id="incident-form">
+                            <div class="form-group">
+                                <label for="incident-type">Incident Category</label>
+                                <select id="incident-type" class="form-control" required>
+                                    <option value="">Select Incident Type</option>
+                                    <option value="Unsafe Situation">Unsafe Situation / Stalking</option>
+                                    <option value="Harassment">Harassment / Road Aggression</option>
+                                    <option value="Medical Emergency">Medical Emergency / Accident</option>
+                                    <option value="Domestic Violence">Domestic Conflict</option>
+                                    <option value="Other">Other Emergency</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="incident-description">Incident Description</label>
+                                <textarea id="incident-description" class="form-control" placeholder="Describe the situation, vehicle numbers, suspects, or assistance needed..." required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="incident-location">Location (Street, Landmark, Transit Line)</label>
+                                <input type="text" id="incident-location" class="form-control" placeholder="e.g. MG Road Metro Station, Exit 2">
+                            </div>
+
+                            <button type="submit" class="btn btn-danger btn-block">
+                                <span>📤</span> Submit Incident Report
+                            </button>
+                        </form>
+
+                        <div id="incident-message"></div>
+                    </div>
+
+                    <!-- Personal Safety Guidelines -->
+                    <div class="form-card">
+                        <h3><span>🛡️</span> Personal Defense Protocols</h3>
+                        <p class="form-subtitle">Practical advice for unexpected threats.</p>
+
+                        <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 10px;">
+                            <div class="action-card">
+                                <h4 style="color: var(--navy-900); font-size: 15px; margin-bottom: 4px;">1. Solo Transit Safety</h4>
+                                <p style="color: var(--slate-600); font-size: 13px;">When taking late-night cabs, share your live GPS location link with a contact before departure.</p>
+                            </div>
+                            <div class="action-card">
+                                <h4 style="color: var(--navy-900); font-size: 15px; margin-bottom: 4px;">2. Deterrence Tactics</h4>
+                                <p style="color: var(--slate-600); font-size: 13px;">If you suspect you are being followed, change direction towards crowded shops or click Sound Emergency Siren above.</p>
+                            </div>
+                            <div class="action-card">
+                                <h4 style="color: var(--navy-900); font-size: 15px; margin-bottom: 4px;">3. Instant Evidence Logging</h4>
+                                <p style="color: var(--slate-600); font-size: 13px;">Submitting an incident report provides an indelible digital timestamp in MongoDB for reporting to 112.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             DASHBOARD: EMERGENCY INCIDENT HISTORY
+             ============================================================ -->
+        <section class="dashboard-section" id="incident-history">
+            <div class="dashboard-container">
+                <div class="incident-history-header">
+                    <div>
+                        <span class="section-eyebrow">Database Audit Trail</span>
+                        <h2 style="font-size: 28px; font-weight: 800; color: var(--navy-900); margin-top: 4px;">Emergency Incident History</h2>
+                        <p style="color: var(--slate-600); font-size: 14px; margin-top: 4px;">Audit log of safety reports retrieved from local MongoDB.</p>
+                    </div>
+
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="loadIncidentHistory()">
+                        <span>🔄</span> Refresh Incident History
+                    </button>
+                </div>
+
+                <div id="incident-history-list">
+                    <div class="empty-state">Loading incident reports...</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3><span>🛡️</span> SafeGuard 360 | Personal Safety</h3>
+                <p>Engineered for solo commuters, personal security, and rapid emergency dispatch. Integrated with 112 National Police & Medical.</p>
+            </div>
+
+            <div class="footer-nav">
+                <a href="/">Home</a>
+                <a href="/womens-safety">Women's Safety</a>
+                <a href="/child-safety">Child Safety</a>
+                <a href="/personal-safety">Personal Safety</a>
+                <a href="/#empowerment-hub">Empowerment Hub</a>
+                <a href="#trusted-contacts">Contacts</a>
+                <a href="#report-incident">Report Incident</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 SafeGuard 360 | Personal Defense Dashboard</p>
+            <p>Police & Medical: 112 | Women: 181 | Child: 1098</p>
+        </div>
+    </footer>
+
+    <script src="/script.js"></script>
+    <script>
+        // Web Audio API Emergency Siren implementation
+        let sirenOscillator = null;
+        let sirenAudioContext = null;
+        let sirenInterval = null;
+
+        function toggleDistressSiren() {
+            const btn = document.getElementById("siren-toggle-btn");
+            if (sirenOscillator) {
+                // Stop siren
+                try {
+                    sirenOscillator.stop();
+                    sirenOscillator.disconnect();
+                } catch(e) {}
+                clearInterval(sirenInterval);
+                sirenOscillator = null;
+                btn.innerHTML = "<span>📢</span> Sound Emergency Siren";
+                btn.className = "btn btn-danger btn-sm";
+            } else {
+                // Start siren
+                try {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    sirenAudioContext = new AudioContext();
+                    sirenOscillator = sirenAudioContext.createOscillator();
+                    const gainNode = sirenAudioContext.createGain();
+                    
+                    sirenOscillator.type = "sawtooth";
+                    gainNode.gain.setValueAtTime(0.5, sirenAudioContext.currentTime);
+                    
+                    let highPitch = false;
+                    sirenOscillator.frequency.setValueAtTime(800, sirenAudioContext.currentTime);
+                    
+                    sirenInterval = setInterval(() => {
+                        if (!sirenOscillator) return;
+                        highPitch = !highPitch;
+                        sirenOscillator.frequency.setTargetAtTime(highPitch ? 1200 : 700, sirenAudioContext.currentTime, 0.1);
+                    }, 400);
+
+                    sirenOscillator.connect(gainNode);
+                    gainNode.connect(sirenAudioContext.destination);
+                    sirenOscillator.start();
+                    
+                    btn.innerHTML = "<span>🛑</span> Stop Emergency Siren";
+                    btn.className = "btn btn-secondary btn-sm";
+                } catch(err) {
+                    alert("Audio siren is not supported on this browser.");
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
